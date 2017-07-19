@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kiko.ServerSocketListener;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,10 +14,11 @@ namespace Kiko.WindowService
 
         public bool Start()
         {
-            _watcher = new FileSystemWatcher(@"c:\temp\a", "*_in.txt");
-            _watcher.Created += FileCreated;
-            _watcher.IncludeSubdirectories = false;
-            _watcher.EnableRaisingEvents = true;
+            //_watcher = new FileSystemWatcher(@"c:\temp\a", "*_in.txt");
+            //_watcher.Created += FileCreated;
+            //_watcher.IncludeSubdirectories = false;
+            //_watcher.EnableRaisingEvents = true;
+          //  AsynchronousServerSocket.StartListening();
 
             return true;
         }

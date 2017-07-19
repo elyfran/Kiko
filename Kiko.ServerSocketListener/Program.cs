@@ -10,8 +10,7 @@ namespace Kiko.ServerSocketListener
     {
         static void Main(string[] args)
         {
-            AsynchronousServerSocket.StartListening();
-            
+            AsynchronousSocketListener.StartListening();
         }
     }
 }

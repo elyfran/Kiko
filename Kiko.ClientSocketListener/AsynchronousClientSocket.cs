@@ -1,11 +1,14 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Kiko.ClientSocketListener
 {
+    // State object for receiving data from remote device.  
     public class StateObject
     {
         // Client socket.  
@@ -17,7 +20,8 @@ namespace Kiko.ClientSocketListener
         // Received data string.  
         public StringBuilder sb = new StringBuilder();
     }
-    public class AsynchronousClientSocket
+
+    public class AsynchronousClient
     {
         // The port number for the remote device.  
         private const int port = 11000;
@@ -41,7 +45,7 @@ namespace Kiko.ClientSocketListener
                 // Establish the remote endpoint for the socket.  
                 // The name of the   
                 // remote device is "host.contoso.com".  
-                IPHostEntry ipHostInfo = Dns.Resolve("DESKTOP-BHKJM64");
+                IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
                 IPAddress ipAddress = ipHostInfo.AddressList[0];
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
 
@@ -55,7 +59,7 @@ namespace Kiko.ClientSocketListener
                 connectDone.WaitOne();
 
                 // Send test data to the remote device.  
-                Send(client, "This is a test<EOF>");
+                Send(client, "686825266A03586880000001580001100A0C1E0A2E05027AC8390C4657C5000156001DF1000000060D0A");
                 sendDone.WaitOne();
 
                 // Receive the response from the remote device.  
@@ -162,6 +166,7 @@ namespace Kiko.ClientSocketListener
             // Begin sending the data to the remote device.  
             client.BeginSend(byteData, 0, byteData.Length, 0,
                 new AsyncCallback(SendCallback), client);
+            
         }
 
         private static void SendCallback(IAsyncResult ar)
@@ -183,6 +188,5 @@ namespace Kiko.ClientSocketListener
                 Console.WriteLine(e.ToString());
             }
         }
-
-        }
+    }
 }

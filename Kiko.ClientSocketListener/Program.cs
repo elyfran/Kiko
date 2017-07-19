@@ -10,8 +10,7 @@ namespace Kiko.ClientSocketListener
     {
         static void Main(string[] args)
         {
-            AsynchronousClientSocket.StartClient();
-            
+            AsynchronousClient.StartClient();
         }
     }
 }

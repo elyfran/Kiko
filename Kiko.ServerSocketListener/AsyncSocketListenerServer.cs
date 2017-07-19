@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Kiko.ServerSocketListener
 {
@@ -17,10 +19,15 @@ namespace Kiko.ServerSocketListener
         // Received data string.  
         public StringBuilder sb = new StringBuilder();
     }
-    public class AsynchronousServerSocket
+
+    public class AsynchronousSocketListener
     {
         // Thread signal.  
         public static ManualResetEvent allDone = new ManualResetEvent(false);
+
+        public AsynchronousSocketListener()
+        {
+        }
 
         public static void StartListening()
         {
@@ -107,21 +114,21 @@ namespace Kiko.ServerSocketListener
                 // Check for end-of-file tag. If it is not there, read   
                 // more data.  
                 content = state.sb.ToString();
-                if (content.IndexOf("<EOF>") > -1)
-                {
+                //if (content.IndexOf("<EOF>") > -1)
+                //{
                     // All the data has been read from the   
                     // client. Display it on the console.  
                     Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
                         content.Length, content);
                     // Echo the data back to the client.  
                     Send(handler, content);
-                }
-                else
-                {
-                    // Not all data received. Get more.  
-                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                    new AsyncCallback(ReadCallback), state);
-                }
+                //}
+                //else
+                //{
+                //    // Not all data received. Get more.  
+                //    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                //    new AsyncCallback(ReadCallback), state);
+                //}
             }
         }
 
@@ -154,7 +161,9 @@ namespace Kiko.ServerSocketListener
             {
                 Console.WriteLine(e.ToString());
             }
-
         }
     }
 }
+
+
+//AsyncSocketListenerServer/
