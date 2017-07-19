@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kiko.ServerSocketListener
+namespace Kiko.ClientSocketListener
 {
     class Program
     {
         static void Main(string[] args)
         {
-            AsynchronousServerSocket.StartListening();
+            AsynchronousClientSocket.StartClient();
             
         }
     }

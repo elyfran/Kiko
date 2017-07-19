@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C2253FF6-BCD1-4941-AD92-3CC0300E0664}</ProjectGuid>
+    <ProjectGuid>{6C649D44-2658-4C0F-BDF1-2E4744229317}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Kiko.ServerSocketListener</RootNamespace>
-    <AssemblyName>Kiko.ServerSocketListener</AssemblyName>
+    <RootNamespace>Kiko.ClientSocketListener</RootNamespace>
+    <AssemblyName>Kiko.ClientSocketListener</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -42,26 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsynchronousServerSocket.cs" />
+    <Compile Include="AsynchronousClientSocket.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Kiko.Models\Kiko.Models.csproj">
-      <Project>{53e8ed4c-af5c-4495-be9b-ee28d40c02fb}</Project>
-      <Name>Kiko.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kiko.Repository\Kiko.Repository.csproj">
-      <Project>{8f288374-237b-4354-ab93-c78aed1d210e}</Project>
-      <Name>Kiko.Repository</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kiko.Web\Kiko.Web.csproj">
-      <Project>{fde0de89-c328-48fd-bc59-48e785514605}</Project>
-      <Name>Kiko.Web</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
