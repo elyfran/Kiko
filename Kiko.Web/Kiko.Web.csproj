@@ -176,8 +176,17 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\DeviceDetailedServices.cs" />
+    <Compile Include="Controllers\DevicePositionDataServices.cs" />
+    <Compile Include="Controllers\DeviceServices.cs" />
+    <Compile Include="Controllers\EventnoteServices.cs" />
+    <Compile Include="Controllers\EventTypeServices.cs" />
+    <Compile Include="Controllers\FencesServices.cs" />
+    <Compile Include="Controllers\FuelsServices.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\OrganizationsServices.cs" />
+    <Compile Include="Controllers\UsersServices.cs" />
+    <Compile Include="Controllers\ValuesController1.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

@@ -50,8 +50,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="DeviceDetailedRepository.cs" />
+    <Compile Include="DevicePositionDataRepository.cs" />
+    <Compile Include="DeviceRepository.cs" />
+    <Compile Include="EventnoteRepository.cs" />
+    <Compile Include="EventTypeRepository.cs" />
+    <Compile Include="FencesRepository.cs" />
+    <Compile Include="FuelsRepository.cs" />
+    <Compile Include="OrganizationsRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UsersRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kiko.Models\Kiko.Models.csproj">
