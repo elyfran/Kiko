@@ -24,6 +24,7 @@ namespace Kiko.ServerSocketListener
     {
         // Thread signal.  
         public static ManualResetEvent allDone = new ManualResetEvent(false);
+        private static string IEMI;
 
         public AsynchronousSocketListener()
         {
@@ -49,7 +50,7 @@ namespace Kiko.ServerSocketListener
             try
             {
                 listener.Bind(localEndPoint);
-                listener.Listen(100);
+                listener.Listen(1000);
 
                 while (true)
                 {
@@ -111,27 +112,56 @@ namespace Kiko.ServerSocketListener
                 state.sb.Append(Encoding.ASCII.GetString(
                     state.buffer, 0, bytesRead));
 
-                // Check for end-of-file tag. If it is not there, read   
-                // more data.  
+
                 content = state.sb.ToString();
-                //if (content.IndexOf("<EOF>") > -1)
-                //{
-                    // All the data has been read from the   
-                    // client. Display it on the console.  
-                    Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
-                        content.Length, content);
-                    // Echo the data back to the client.  
-                    Send(handler, content);
-                //}
-                //else
-                //{
-                //    // Not all data received. Get more.  
-                //    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                //    new AsyncCallback(ReadCallback), state);
-                //}
+
+                Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
+                    content.Length, content);
+
+                if (content.Length == 84 && content.StartsWith("6868") && content.EndsWith("0D0A"))
+                {
+                    IEMI = content.Substring(10, 17);
+                   var datetime= GetDateTime(content.Substring(32, 12));
+                    var lat = GetLatLong(content.Substring(44, 8));
+                    var _long = GetLatLong(content.Substring(52, 8));
+                    var spead = ParseHexString((content.Substring(60, 2)));
+                    var course = ParseHexString((content.Substring(62, 4)));
+                    Console.WriteLine("==================================\n IEMI {0} \n  lat : {1} \n long: {2} \n spead:{3} \n course : {4}\n datetime: {5}",
+                      IEMI, lat, _long, spead, course, datetime);
+                }
+
+                // Echo the data back to the client.  
+                Send(handler, content);
+
             }
         }
 
+
+        private static string GetLatLong(string v)
+        {
+            return ((ParseHexString(v) )/ 30000 / 60).ToString();
+        }
+
+        private static string GetDateTime(string deviceDatetime)
+        {
+            var year = 2000+(int)ParseHexString(deviceDatetime.Substring(0, 2));
+            var month = (int)ParseHexString(deviceDatetime.Substring(2, 2));
+            var day = (int)ParseHexString(deviceDatetime.Substring(4, 2));
+            var hour = (int)ParseHexString(deviceDatetime.Substring(6, 2));
+            var minth = (int)ParseHexString(deviceDatetime.Substring(8, 2));
+            var sec = (int)ParseHexString(deviceDatetime.Substring(10, 2));
+            return new DateTime(year, month, day, hour, minth, sec).ToString();
+          
+
+
+        }
+        private static Decimal ParseHexString(string hexNumber)
+        {
+            hexNumber = hexNumber.Replace("x", string.Empty);
+            long result = 0;
+            long.TryParse(hexNumber, System.Globalization.NumberStyles.HexNumber, null, out result);
+            return result;
+        }
         private static void Send(Socket handler, String data)
         {
             // Convert the string data to byte data using ASCII encoding.  
