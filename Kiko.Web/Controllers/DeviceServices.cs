@@ -4,25 +4,86 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
-using System.Web.OData;
-using System.Web.OData.Routing;
+
 using Kiko.Repository;
+using Marvin.JsonPatch;
+using System.Web.Http.Routing;
+using System.Web;
+
 namespace Kiko.API
 {
+
     public class DeviceController : ApiController
     {
         private DeviceRepository _DeviceRepository = new DeviceRepository();
         // GET odata/Device 
-        [EnableQuery(MaxExpansionDepth = 3, MaxSkip = 10, MaxTop = 10, PageSize = 10)]
-        public IHttpActionResult Get()
+        const int maxPageSize = 10;
+        [Route("api/devices", Name = "AlldevicesList")]
+        public IHttpActionResult Get(string fields = null, string sort = "Id", int? page = 1, int pageSize = maxPageSize)
         {
-            return Ok(_DeviceRepository.GetDevices());
+
+
+            var _devices = _DeviceRepository.GetDevices(fields, sort, page, pageSize);
+            // ensure the page size isn't larger than the maximum.
+            if (pageSize > maxPageSize)
+            {
+                pageSize = maxPageSize;
+            }
+
+            // calculate data for metadata
+            var totalCount = _devices.Count();
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            var urlHelper = new UrlHelper(Request);
+            var prevLink = page > 1 ? urlHelper.Link("AlldevicesList",
+                new
+                {
+                    page = page - 1,
+                    pageSize = pageSize,
+                    sort = sort
+                    ,
+                    fields = fields
+                  
+                }) : "";
+            var nextLink = page < totalPages ? urlHelper.Link("AlldevicesList",
+                new
+                {
+                    page = page + 1,
+                    pageSize = pageSize,
+                    sort = sort
+                     ,
+                    fields = fields
+                    
+                }) : "";
+
+
+            var paginationHeader = new
+            {
+                currentPage = page,
+                pageSize = pageSize,
+                totalCount = totalCount,
+                totalPages = totalPages,
+                previousPageLink = prevLink,
+                nextPageLink = nextLink
+            };
+
+            HttpContext.Current.Response.Headers.Add("X-Pagination",
+               Newtonsoft.Json.JsonConvert.SerializeObject(paginationHeader));
+
+
+            // return result
+            return Ok(_devices);
         }
         // GET odata/Device('key') 
-        [EnableQuery]
-        public IHttpActionResult Get( int key)
+ 
+        public IHttpActionResult Get( long id,string fields="*")
         {
-            var _Device = _DeviceRepository.GetDevice(key);
+            var _Device = _DeviceRepository.GetDeviceById(id,fields);
+            if (_Device==null)
+            {
+                return NotFound();
+            }
+            else
             return Ok(_Device);
         }
         [HttpPost]
@@ -33,9 +94,9 @@ namespace Kiko.API
                 return BadRequest(ModelState);
             }
             _DeviceRepository.Add(item);
-            return Created(item);
+            return Ok(item);
         }
-        public IHttpActionResult Put( int key, Device item)
+        public IHttpActionResult Put( long key, Device item)
         {
             if (!ModelState.IsValid)
             {
@@ -44,20 +105,21 @@ namespace Kiko.API
             _DeviceRepository.Update(key, item);
             return StatusCode(HttpStatusCode.NoContent);
         }
-        public IHttpActionResult Patch( int key, Delta<Device> patch)
+        [HttpPatch]
+        public IHttpActionResult Patch(long id, [FromBody]JsonPatchDocument<Device> devicePatchDocument)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var currentDevice = _DeviceRepository.GetDevice(key);
-            if (currentDevice == null)
-            {
-                return NotFound();
-            }
-            patch.Patch(currentDevice);
-            return StatusCode(HttpStatusCode.NoContent);
+            // get the expense from the repository
+            var device = _DeviceRepository.GetDeviceById(id);
+
+            // apply the patch document 
+            devicePatchDocument.ApplyTo(device);
+
+            return Ok(devicePatchDocument);
+            // changes have been applied.  Submit to backend, ... 
         }
-        public IHttpActionResult Delete( int key) { _DeviceRepository.Delete(key); return StatusCode(HttpStatusCode.NoContent); }
+        public IHttpActionResult Delete(long  id) {
+            _DeviceRepository.Delete(id);
+            return   StatusCode(HttpStatusCode.NoContent);
+        }
     }
 }
